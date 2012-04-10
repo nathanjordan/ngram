@@ -5,13 +5,13 @@ import pymongo
 ################################################################
 
 #creates a list of tuples with a string and its count
-def createGramCounts( source ):
+def createGramCounts( source , filename ):
 	dest = []
 	while len(source):
 		s = source[0]
 		c = source.count( s )
 		removeAllFromList( s , source )
-		dest.append( { "gram" : s , "count" : c } )
+		dest.append( { "gram" : s , "count" : c , "filename" : filename } )
 	return dest
 		
 #removes all of item from a list
@@ -36,18 +36,14 @@ def createGramsForN( words , n ):
 		grams.append( s )
 	return grams
 
-def createNGrams( fileList , nList ):
-	entityList = []
+def createNGrams( fileList , n ):
+	gramList = []
 	for i in fileList:
 		f = open( i , "r" )
 		words = f.read().split(" ")
-		gramEntity = { "filename" : i }
-		for j in nList:
-			gramList = createGramsForN( words , j )
-			gramListWithCounts = createGramCounts( gramList )
-			gramEntity[ "grams" + str(j) ] = gramListWithCounts
-		entityList.append( gramEntity )
-	return entityList
+		grams = createGramsForN( words , n )
+		gramList.extend( createGramCounts( grams , i ) )
+	return gramList
 	
 ################################################################
 ######################    Program    ###########################
@@ -55,10 +51,11 @@ def createNGrams( fileList , nList ):
 
 ##### NGram stuff ##############################################
 
-fileList = [ "seuss.txt" , "macbeth.txt" ]
-nList = [ 1 , 2 , 3 , 4 ]
+fileList = [ "seuss.txt" , "seuss2.txt" , "seuss3.txt" ]
 
-nGramDictionary = createNGrams( fileList , nList )
+nGramDictionary = createNGrams( fileList , 3 )
+
+print nGramDictionary
 
 ##### Mongo stuff ##############################################
 
