@@ -1,5 +1,6 @@
 import pymongo
 import sys
+import re
 
 ################################################################
 ###############    Function Definitions    #####################
@@ -50,7 +51,8 @@ def createNGramList( fileList , n ):
 	gramList = []
 	for i in fileList:
 		f = open( i , "r" )
-		words = f.read().split(" ")
+		words = re.sub("\"" , "" , f.read() )
+		words = words.split(" ")
 		grams = createGramsForN( words , n )
 		gramList.extend( countGrams( grams , i ) )
 		f.close()
@@ -62,7 +64,7 @@ def createNGramList( fileList , n ):
 
 ##### NGram stuff ##############################################
 
-fileList = [ "speare.txt" ]
+fileList = [ "mars.txt" ]
 
 nGramDictionary = createNGramList( fileList , 3 )
 
